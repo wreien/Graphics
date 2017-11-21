@@ -6,13 +6,32 @@
 #include <fstream>
 
 #include "shader.h"
+#include "level.h"
 
 void processInput(GLFWwindow* window) {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
 
-int main() {
+int main(int argc, char** argv) {
+    if (argc != 2) {
+        std::cout << "Usage: " << argv[0] << " <level>\n";
+        std::exit(1);
+    }
+
+    {
+        world::Level level { argv[1] };
+        auto [width, height] = level.size();
+
+        std::cout << "Level size: " << width << ", " << height << std::endl;
+        for (decltype(width) row = 0; row < width; row++) {
+            for (decltype(height) col = 0; col < height; col++) {
+                std::cout << level.altitude(col, row) << " ";
+            }
+            std::cout << "\n";
+        }
+    }
+
     glfwSetErrorCallback([](auto err, auto desc) {
         std::cerr << "Error " << err << ": " << desc << std::endl;
     });

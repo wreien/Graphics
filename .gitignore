@@ -1,7 +1,5 @@
 *.o
-*.a
-*.lib
-obj/*
-dep/*
+.o/
+.d/
 compile_commands.json
 graphics
