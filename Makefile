@@ -14,7 +14,7 @@ LDFLAGS  = -stdlib=libc++ -lglfw -ldl
 
 POSTCOMPILE = @mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d && touch $@
 
-FILES = main.cpp shader.cpp level.cpp
+FILES = main.cpp shader.cpp level.cpp surface.cpp
 SRCS  = $(addprefix $(SRCDIR)/, $(FILES))
 OBJS  = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
 LIBS  = $(LIBDIR)/src/jsoncpp.o $(LIBDIR)/src/glad.o
