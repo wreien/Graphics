@@ -1,31 +1,43 @@
 CC=clang
 CXX=clang++
 
-SRCDIR = src
-DEPDIR = .d
-OBJDIR = .o
 LIBDIR = lib
-$(shell mkdir -p $(DEPDIR) $(OBJDIR) >/dev/null)
+SRCDIR = src
 
-DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.Td
+FILES = main.cpp shader.cpp level.cpp surface.cpp
+LIBS  = $(LIBDIR)/src/jsoncpp.o $(LIBDIR)/src/glad.o
+BIN   = graphics
+
+DEBUGDIR = debug
+DEBUGBIN = graphics_d
+
+OBJDIR = .o
+DEPDIR = .d
+
 CXXFLAGS = -c -stdlib=libc++ -std=c++1z -W{all,extra,error,no-unused-parameter} -pedantic -isystem ./$(LIBDIR)/include
 CFLAGS   = -c -isystem ./$(LIBDIR)/include
 LDFLAGS  = -stdlib=libc++ -lglfw -ldl
 
+DEBUG ?= 1
+ifeq ($(DEBUG), 1)
+	CXXFLAGS += -DDEBUG -g
+	LDFLAGS += -g
+	OBJDIR := $(DEBUGDIR)/$(OBJDIR)
+	DEPDIR := $(DEBUGDIR)/$(DEPDIR)
+	BIN := $(DEBUGBIN)
+endif
+
+DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.Td
 POSTCOMPILE = @mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d && touch $@
 
-FILES = main.cpp shader.cpp level.cpp surface.cpp
 SRCS  = $(addprefix $(SRCDIR)/, $(FILES))
 OBJS  = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
-LIBS  = $(LIBDIR)/src/jsoncpp.o $(LIBDIR)/src/glad.o
 
-all : graphics
+$(shell mkdir -p $(OBJDIR) $(DEPDIR) >/dev/null)
 
-debug : CXXFLAGS += -DDEBUG -g
-debug : LDFLAGS += -g
-debug : graphics
+all : $(BIN)
 
-graphics : $(OBJS) $(LIBS)
+$(BIN) : $(OBJS) $(LIBS)
 	$(CXX) $(LDFLAGS) $^ -o $@
 
 $(LIBDIR)/src/glad.o : $(LIBDIR)/src/glad.c
@@ -43,8 +55,8 @@ $(DEPDIR)/%.d : ;
 
 .PHONY : clean fullclean
 clean :
-	rm -f graphics
-	rm -rd $(DEPDIR) $(OBJDIR)
+	rm -f $(BIN) $(DEBUGBIN)
+	rm -rf $(DEPDIR) $(OBJDIR) $(DEBUGDIR)
 
 fullclean : clean
 	find . -name '*.o' -delete
