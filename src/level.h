@@ -10,6 +10,7 @@
 #include <glm/mat4x4.hpp>
 
 #include "shader.h"
+#include "camera.h"
 
 namespace world {
 
@@ -24,10 +25,18 @@ public:
     void load_from_file(std::string filename);
     void generate_mesh();
 
-    void render(const glm::mat4& modelview) const;
+    void render(const glm::mat4& projection) const;
+
+    void move(graphics::Camera::Direction dir, float dt) {
+        this->camera.move(dir, dt, [=](float x, float z) { return altitude(x, z); });
+    }
+
+    void tilt(float dx, float dy) {
+        this->camera.tilt(dx, dy);
+    }
 
     auto size() const { return std::make_pair(width, depth); }
-    float altitude(float x, float y);
+    float altitude(float x, float z) const;
 
 private:
     unsigned width;
@@ -46,6 +55,8 @@ private:
     unsigned vaos[1];
     graphics::Shader shader;
     void generate_VBOs();
+
+    graphics::Camera camera;
 };
 
 }

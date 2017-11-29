@@ -4,7 +4,7 @@ CXX=clang++
 LIBDIR = lib
 SRCDIR = src
 
-FILES = main.cpp shader.cpp level.cpp surface.cpp
+FILES = main.cpp shader.cpp level.cpp surface.cpp camera.cpp
 LIBS  = $(LIBDIR)/src/jsoncpp.o $(LIBDIR)/src/glad.o
 BIN   = graphics
 

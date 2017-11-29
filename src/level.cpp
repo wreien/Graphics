@@ -49,6 +49,9 @@ void Level::load_from_file(std::string filename) {
     }
 
     generate_mesh();
+
+    camera.setClamps({ width - 1, depth - 1 });
+    this->move(graphics::Camera::Direction::Forward, 0);
 }
 
 void Level::generate_mesh() {
@@ -127,7 +130,9 @@ void Level::generate_VBOs() {
     glBindVertexArray(0);
 }
 
-void Level::render(const glm::mat4& modelview) const {
+void Level::render(const glm::mat4& projection) const {
+    glm::mat4 modelview = projection * camera.getView();
+
     shader.use();
     shader.setUniform("modelview", modelview);
 
@@ -135,7 +140,7 @@ void Level::render(const glm::mat4& modelview) const {
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_SHORT, 0);
 }
 
-float Level::altitude(float x, float z) {
+float Level::altitude(float x, float z) const {
     return heightmap[static_cast<unsigned>(x) * depth + static_cast<unsigned>(z)];
 }
 

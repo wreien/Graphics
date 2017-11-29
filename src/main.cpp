@@ -22,26 +22,27 @@ public:
         : window { window }, level { level_filename }
     {
         glfwSetWindowUserPointer(window, this);
+        glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
         glfwGetWindowSize(window, &screen_width, &screen_height);
+        glfwGetCursorPos(window, &last_mouse_x, &last_mouse_y);
 
         initOGL();
         setupCallbacks();
     }
 
     void mainLoop() {
-        glm::mat4 view = glm::lookAt(
-                glm::vec3 { 0, 1, 3 },
-                glm::vec3 { 2, 0, 2 },
-                glm::vec3 { 0, 1, 0 });
-        glm::mat4 camera = projection * view;
-
+        float last = glfwGetTime();
         while (!glfwWindowShouldClose(window)) {
-            processInput();
+            float now = glfwGetTime();
+            float dt = now - last;
+            last = now;
 
             glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-            level.render(camera);
+            level.render(projection);
+            processInput(dt);
 
             glfwSwapBuffers(window);
             glfwPollEvents();
@@ -52,16 +53,30 @@ private:
     int screen_width;
     int screen_height;
 
+    double last_mouse_x;
+    double last_mouse_y;
+
     world::Level level;
     glm::mat4 projection;
 
-    void processInput() {
+    void processInput(float dt) {
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
+
+        using Direction = graphics::Camera::Direction;
+        if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+            level.move(Direction::Forward, dt);
+        if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+            level.move(Direction::Back, dt);
+        if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+            level.move(Direction::Left, dt);
+        if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+            level.move(Direction::Right, dt);
     }
 
     void setupCallbacks() {
         glfwSetFramebufferSizeCallback(window, framebufferSizeCallback);
+        glfwSetCursorPosCallback(window, mouseMoveCallback);
     }
 
     void initOGL() {
@@ -80,6 +95,18 @@ private:
 
         float aspect = static_cast<float>(self->screen_width) / self->screen_height;
         self->projection = glm::perspective(glm::radians(60.0f), aspect, 0.1f, 20.f);
+    }
+
+    static void mouseMoveCallback(GLFWwindow* window, double xpos, double ypos) {
+        Manager* self = reinterpret_cast<Manager*>(glfwGetWindowUserPointer(window));
+
+        double dx = xpos - self->last_mouse_x;
+        double dy = self->last_mouse_y - ypos;
+
+        self->last_mouse_x = xpos;
+        self->last_mouse_y = ypos;
+
+        self->level.tilt(dx, dy);
     }
 };
 
