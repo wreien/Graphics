@@ -1,22 +1,21 @@
-CC=clang
-CXX=clang++
+CC  := clang
+CXX := clang++
 
-LIBDIR = lib
-SRCDIR = src
+LIBDIR := lib
+SRCDIR := src
 
-FILES = main.cpp shader.cpp level.cpp surface.cpp camera.cpp
-LIBS  = $(LIBDIR)/src/jsoncpp.o $(LIBDIR)/src/glad.o
-BIN   = graphics
+LIBS  := $(LIBDIR)/src/jsoncpp.o $(LIBDIR)/src/glad.o
+BIN   := graphics
 
-DEBUGDIR = debug
-DEBUGBIN = graphics_d
+DEBUGDIR := debug
+DEBUGBIN := graphics_d
 
-OBJDIR = .o
-DEPDIR = .d
+OBJDIR := .o
+DEPDIR := .d
 
-CXXFLAGS = -c -stdlib=libc++ -std=c++1z -W{all,extra,error,no-unused-parameter} -pedantic -isystem ./$(LIBDIR)/include
-CFLAGS   = -c -isystem ./$(LIBDIR)/include
-LDFLAGS  = -stdlib=libc++ -lglfw -ldl
+CXXFLAGS := -c -stdlib=libc++ -std=c++1z -W{all,extra,error,no-unused-parameter} -pedantic -isystem ./$(LIBDIR)/include
+CFLAGS   := -c -isystem ./$(LIBDIR)/include
+LDFLAGS  := -stdlib=libc++ -lglfw -ldl
 
 DEBUG ?= 1
 ifeq ($(DEBUG), 1)
@@ -27,14 +26,15 @@ ifeq ($(DEBUG), 1)
 	BIN := $(DEBUGBIN)
 endif
 
-DEPFLAGS = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.Td
+DEPFLAGS    = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.Td
 POSTCOMPILE = @mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d && touch $@
 
-SRCS  = $(addprefix $(SRCDIR)/, $(FILES))
-OBJS  = $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
+SRCS := $(wildcard src/*.cpp)
+OBJS := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
 
 $(shell mkdir -p $(OBJDIR) $(DEPDIR) >/dev/null)
 
+.PHONY : all
 all : $(BIN)
 
 $(BIN) : $(OBJS) $(LIBS)
