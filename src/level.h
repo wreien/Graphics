@@ -39,6 +39,8 @@ public:
     float altitude(float x, float z) const;
 
 private:
+    glm::vec2 retrieveST(float x, float z) const;
+
     unsigned width;
     unsigned depth;
     std::vector<float> heightmap;

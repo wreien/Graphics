@@ -140,8 +140,66 @@ void Level::render(const glm::mat4& projection) const {
     glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_SHORT, 0);
 }
 
+glm::vec2 Level::retrieveST(float x, float z) const {
+    auto different = [](float a, float b) { return std::fabsf(a - b) > 1e-5; };
+
+    auto comp_x = [different](const vertexData& a, const vertexData& b) {
+        if (different(a.position.x, b.position.x))
+            return a.position.x < b.position.x;
+        return different(a.position.z, b.position.z) && a.position.z < b.position.z;
+    };
+
+    auto comp_z = [different](const vertexData& a, const vertexData& b) {
+        return different(a.position.z, b.position.z) && a.position.z < b.position.z;
+    };
+
+#if DEBUG
+    if (!std::is_sorted(begin(data), end(data), comp_x))
+        throw std::runtime_error("Bad sort comp!");
+#endif
+
+    const auto dataDepth = (depth - 1) * slices_per_tile + 1;
+
+    // bounds checking
+    const auto firstIter = begin(data) + dataDepth + 1;
+    const auto lastIter  = end(data)   - dataDepth - 1;
+
+    // get iter to point directly after given in both directions
+    vertexData value; value.position = { x, 0, z };
+    auto xIter   = std::lower_bound(firstIter, lastIter         , value, comp_x);
+    auto closest = std::lower_bound(xIter    , xIter + dataDepth, value, comp_z);
+
+    // recalculate the st used to generate this point
+    auto iterPos = std::distance(begin(data), closest);
+    glm::vec2 location = { iterPos / dataDepth, iterPos % dataDepth };
+
+    glm::vec2 inc = {
+        1.0f / ((width - 1) * slices_per_tile),
+        1.0f / ((depth - 1) * slices_per_tile),
+    };
+
+    glm::vec2 st0 = {
+        (location.s - 1) * inc.s,
+        (location.t - 1) * inc.t,
+    };
+
+    const glm::vec3& current = closest->position;
+    const glm::vec3& previous =
+        data[(location.s - 1) * dataDepth + location.t - 1].position;
+
+    // lerp from previous to current point's st
+    return glm::clamp(glm::vec2 {
+        st0.s + (x - previous.x) * inc.s / (current.x - previous.x),
+        st0.t + (z - previous.z) * inc.t / (current.z - previous.z),
+    }, 0.f, 1.f);
+}
+
 float Level::altitude(float x, float z) const {
-    return heightmap[static_cast<unsigned>(x) * depth + static_cast<unsigned>(z)];
+    using namespace graphics::surface;
+
+    auto st = retrieveST(x, z);
+    const Controls c { heightmap, width, depth };
+    return bspline(st.s, st.t, c).position.y;
 }
 
 }

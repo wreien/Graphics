@@ -19,8 +19,8 @@ LDFLAGS  := -stdlib=libc++ -lglfw -ldl
 
 DEBUG ?= 1
 ifeq ($(DEBUG), 1)
-	CXXFLAGS += -DDEBUG -g
-	LDFLAGS += -g
+	CXXFLAGS += -DDEBUG -g -fno-limit-debug-info
+	LDFLAGS += -g -fno-limit-debug-info
 	OBJDIR := $(DEBUGDIR)/$(OBJDIR)
 	DEPDIR := $(DEBUGDIR)/$(DEPDIR)
 	BIN := $(DEBUGBIN)
