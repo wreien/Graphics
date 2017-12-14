@@ -29,10 +29,12 @@ endif
 DEPFLAGS    = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.Td
 POSTCOMPILE = @mv -f $(DEPDIR)/$*.Td $(DEPDIR)/$*.d && touch $@
 
-SRCS := $(wildcard src/*.cpp)
+SRCS := $(shell find $(SRCDIR) -name '*.cpp')
 OBJS := $(patsubst $(SRCDIR)/%.cpp,$(OBJDIR)/%.o,$(SRCS))
 
-$(shell mkdir -p $(OBJDIR) $(DEPDIR) >/dev/null)
+STRUCTURE := $(shell find $(SRCDIR) -type d)
+$(shell mkdir -p $(patsubst $(SRCDIR)/%,$(OBJDIR)/%,$(STRUCTURE)) >/dev/null)
+$(shell mkdir -p $(patsubst $(SRCDIR)/%,$(DEPDIR)/%,$(STRUCTURE)) >/dev/null)
 
 .PHONY : all
 all : $(BIN)
