@@ -1,16 +1,15 @@
 #include "camera.h"
-#include "level.h"
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace graphics {
+namespace render {
 
 Camera::Camera()
     : clamps { 0, 0 }
     , position { 0, 0, 0 }
-    , direction { 0, 0, -1 }
-    , yaw { -90 }
+    , direction { 0, 0, 1 }
+    , yaw { 45 }
     , pitch { 0 }
 {
     updateVectors();

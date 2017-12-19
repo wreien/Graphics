@@ -9,7 +9,6 @@
 #include <fstream>
 #include <functional>
 
-#include "shader.h"
 #include "level.h"
 
 // Handles the overarching drawing and input
@@ -38,7 +37,7 @@ public:
             float dt = now - last;
             last = now;
 
-            glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+            glClearColor(0.f, 0.f, 0.f, 1.f);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             level.render(projection);
@@ -63,7 +62,7 @@ private:
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
 
-        using Direction = graphics::Camera::Direction;
+        using Direction = world::Level::Direction;
         if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
             level.move(Direction::Forward, dt);
         if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)

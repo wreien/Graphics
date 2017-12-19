@@ -5,6 +5,7 @@
 #include <string>
 #include <sstream>
 #include <iostream>
+#include <fstream>
 #include <cstdlib>
 
 static unsigned compile(std::string_view shader, int type) {
@@ -29,13 +30,16 @@ static unsigned compile(std::string_view shader, int type) {
     return id;
 }
 
-namespace graphics {
+namespace render {
 
-Shader::Shader(const std::istream& vert, const std::istream& frag) {
+Shader::Shader(std::string vert, std::string frag) {
     std::string vert_str { static_cast<const std::stringstream&>(
-            std::stringstream() << vert.rdbuf()).str() };
+            std::stringstream() << (std::ifstream { vert }).rdbuf()
+        ).str() };
+
     std::string frag_str { static_cast<const std::stringstream&>(
-            std::stringstream() << frag.rdbuf()).str() };
+            std::stringstream() << (std::ifstream { frag }).rdbuf()
+        ).str() };
 
     // Create the vertex and fragment shaders
     unsigned vert_id = compile(vert_str, GL_VERTEX_SHADER);

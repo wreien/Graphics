@@ -1,17 +1,17 @@
 #ifndef SHADER_H_INCLUDED
 #define SHADER_H_INCLUDED
 
-#include <istream>
+#include <string>
 #include <utility>
 #include <glm/fwd.hpp>
 
-namespace graphics {
+namespace render {
 
 // Encapsulates a shader program
 class Shader {
 public:
     // Construct a shader from a vertex and fragment shader.
-    Shader(const std::istream& vert, const std::istream& frag);
+    Shader(std::string vert, std::string frag);
     Shader() : m_id{0} {}
 
     // Deletion

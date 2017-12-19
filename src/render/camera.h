@@ -5,7 +5,7 @@
 #include <glm/mat4x4.hpp>
 #include <functional>
 
-namespace graphics {
+namespace render {
 
 class Camera {
 public:
