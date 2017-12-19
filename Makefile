@@ -63,4 +63,4 @@ clean :
 fullclean : clean
 	find . -name '*.o' -delete
 
-include $(wildcard $(patsubst %, $(DEPDIR)/%.d, $(basename $(SRCS))))
+include $(patsubst $(SRCDIR)/%.cpp,$(DEPDIR)/%.d,$(SRCS))
