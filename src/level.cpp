@@ -15,8 +15,8 @@
 namespace world {
 
 Level::Level(std::string filename)
-    : m_shader { "shaders/main.vert", "shaders/main.frag" }
-    , m_camera { }
+    : m_camera { }
+    , m_shader { "shaders/main.vert", "shaders/main.frag" }
     , m_terrain { std::nullopt }
 {
     load_from_file(filename);

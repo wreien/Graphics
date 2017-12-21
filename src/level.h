@@ -12,7 +12,7 @@
 
 #include "render/shader.h"
 #include "render/terrain.h"
-#include "render/camera.h"
+#include "camera.h"
 
 namespace world {
 
@@ -25,14 +25,14 @@ public:
 
     void render(const glm::mat4& projection) const;
 
-    using Direction = render::Camera::Direction;
+    using Direction = Camera::Direction;
     void move(Direction dir, float dt);
     void tilt(float dx, float dy);
 
 private:
-    render::Shader m_shader;
-    render::Camera m_camera;
+    Camera m_camera;
 
+    render::Shader m_shader;
     std::optional<render::Terrain> m_terrain; // delayed construction
 };
 
