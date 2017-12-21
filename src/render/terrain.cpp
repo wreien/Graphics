@@ -3,6 +3,10 @@
 #include <tuple>
 #include <glm/glm.hpp>
 
+#ifdef DEBUG
+#include <limits>
+#endif
+
 namespace render {
 
 Terrain::Terrain(unsigned width, unsigned depth, std::vector<float> heightmap)
@@ -11,6 +15,11 @@ Terrain::Terrain(unsigned width, unsigned depth, std::vector<float> heightmap)
     , m_heightmap { std::move(heightmap) }
     , m_mesh  { std::nullopt }
 {
+#ifdef DEBUG
+    if (m_width * m_depth > std::numeric_limits<unsigned short>::max())
+        throw std::out_of_range("Too many vertices");
+#endif
+
     unsigned tilesWide = m_width - 1;
     unsigned tilesDeep = m_depth - 1;
 

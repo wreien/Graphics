@@ -26,8 +26,10 @@ void Level::load_from_file(std::string filename) {
     Json::Value root;
     (std::ifstream { filename }) >> root;
 
-    unsigned width = root.get("width", 0).asUInt();
-    unsigned depth = root.get("depth", 0).asUInt();
+    // we handle in column-major order, but for readability we will
+    // pretend we store in row-major order for the json files.
+    unsigned width = root.get("depth", 0).asUInt();
+    unsigned depth = root.get("width", 0).asUInt();
 
     if (width < 5 || depth < 5) {
         std::cerr << "Invalid size for " << filename << ": "
