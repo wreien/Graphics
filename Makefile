@@ -4,7 +4,7 @@ CXX := clang++
 LIBDIR := lib
 SRCDIR := src
 
-LIBS  := $(LIBDIR)/src/jsoncpp.o $(LIBDIR)/src/glad.o
+LIBS  := $(LIBDIR)/src/jsoncpp.o $(LIBDIR)/src/glad.o $(LIBDIR)/src/stb_image.o
 BIN   := graphics
 
 DEBUGDIR := debug
