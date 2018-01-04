@@ -19,7 +19,7 @@ LDFLAGS  := -stdlib=libc++ -lglfw -ldl -pthread
 
 DEBUG ?= 1
 ifeq ($(DEBUG), 1)
-	CXXFLAGS += -DDEBUG -g -fno-limit-debug-info -fsanitize=address
+	CXXFLAGS += -DDEBUG -g -fno-limit-debug-info -fno-omit-frame-pointer
 	LDFLAGS += -g -fno-limit-debug-info
 	OBJDIR := $(DEBUGDIR)/$(OBJDIR)
 	DEPDIR := $(DEBUGDIR)/$(DEPDIR)
@@ -60,10 +60,12 @@ $(DEPDIR)/%.d : ;
 
 .PHONY : clean fullclean
 clean :
-	rm -f $(BIN) $(DEBUGBIN)
-	rm -rf $(DEPDIR) $(OBJDIR) $(DEBUGDIR)
+	rm -f $(BIN)
+	rm -rf $(DEPDIR) $(OBJDIR)
 
-fullclean : clean
-	find . -name '*.o' -delete
+fullclean :
+	find . -name '*.o' -type f -delete
+	rm -f graphics graphics_d
+	rm -rf .d .o debug
 
 include $(patsubst $(SRCDIR)/%.cpp,$(DEPDIR)/%.d,$(SRCS))

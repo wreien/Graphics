@@ -8,7 +8,7 @@ namespace render {
 class Texture {
 public:
     // creation
-    Texture() : m_id { 0 } {}
+    Texture() = default;
     Texture(std::string file) { load(std::move(file)); }
     void load(std::string file);
 
@@ -28,7 +28,7 @@ public:
     void use(int texUnit = -1) const;
 
 private:
-    unsigned m_id;
+    unsigned m_id = 0;
 };
 
 }
