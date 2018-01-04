@@ -82,6 +82,7 @@ private:
         framebufferSizeCallback(window, screen_width, screen_height);
 
         glEnable(GL_DEPTH_TEST);
+        glEnable(GL_TEXTURE_2D);
     }
 
     static void framebufferSizeCallback(GLFWwindow* window, int width, int height) {

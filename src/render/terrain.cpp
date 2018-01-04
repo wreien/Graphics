@@ -13,7 +13,8 @@ Terrain::Terrain(unsigned width, unsigned depth, std::vector<float> heightmap)
     : m_width { width }
     , m_depth { depth }
     , m_heightmap { std::move(heightmap) }
-    , m_mesh  { std::nullopt }
+    , m_tex { "terrain.png" }
+    , m_mesh { std::nullopt }
 {
 #ifdef DEBUG
     if (m_width * m_depth > std::numeric_limits<unsigned short>::max())
@@ -40,7 +41,7 @@ Terrain::Terrain(unsigned width, unsigned depth, std::vector<float> heightmap)
             auto [pos, tx, tz] = bspline(col * x_inc, row * z_inc);
 
             auto norm = glm::cross(tx, tz);
-            auto tex = glm::vec2{ pos.x / slicesWide, pos.z / slicesDeep };
+            auto tex = glm::vec2{ pos.x, pos.z };
 
             vertices.push_back({ pos, norm, tex });
         }

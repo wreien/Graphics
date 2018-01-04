@@ -29,7 +29,7 @@ Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned short> indices)
             (void*) offsetof(Vertex, position));
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
             (void*) offsetof(Vertex, normal));
-    glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex),
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex),
             (void*) offsetof(Vertex, texcoord));
 
     glEnableVertexAttribArray(0);
@@ -48,13 +48,10 @@ Mesh::~Mesh() {
 Mesh::Mesh(Mesh&& other)
     : m_vertices { std::move(other.m_vertices) }
     , m_indices { std::move(other.m_indices) }
-    , m_vao { other.m_vao }
-    , m_vbo { other.m_vbo }
-    , m_ebo { other.m_ebo }
+    , m_vao { std::exchange(other.m_vao, 0) }
+    , m_vbo { std::exchange(other.m_vbo, 0) }
+    , m_ebo { std::exchange(other.m_ebo, 0) }
 {
-    other.m_vao = 0;
-    other.m_vbo = 0;
-    other.m_ebo = 0;
 }
 
 Mesh& Mesh::operator=(Mesh&& other) {

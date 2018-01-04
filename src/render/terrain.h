@@ -7,6 +7,7 @@
 #include <glm/vec2.hpp>
 
 #include "mesh.h"
+#include "texture.h"
 
 namespace render {
 
@@ -16,7 +17,7 @@ class Terrain {
 public:
     Terrain(unsigned width, unsigned depth, std::vector<float> heightmap);
 
-    void render() const { m_mesh->render(); }
+    void render() const { m_tex.use(); m_mesh->render(); }
     float altitude(float x, float z) const;
     auto size() const { return std::make_pair(m_width, m_depth); }
 
@@ -29,6 +30,7 @@ private:
     unsigned m_depth;
     std::vector<float> m_heightmap;
 
+    Texture m_tex;
     std::optional<Mesh> m_mesh; // delayed construction: should always exist
 };
 
