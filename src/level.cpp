@@ -11,6 +11,7 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <chrono>
 
 namespace world {
 
@@ -50,7 +51,12 @@ void Level::load_from_file(std::string filename) {
         std::exit(1);
     }
 
-    m_terrain.emplace(width, depth, std::move(heightmap));
+    { using namespace std::chrono;
+        auto start = high_resolution_clock::now();
+        m_terrain.emplace(width, depth, std::move(heightmap));
+        auto end = high_resolution_clock::now();
+        std::cout << "Time taken: " << duration<float>(end - start).count() << "\n";
+    }
 
     m_camera.setClamps({ width - 1, depth - 1 });
     this->move(Direction::Forward, 0);

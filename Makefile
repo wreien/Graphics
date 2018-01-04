@@ -15,15 +15,18 @@ DEPDIR := .d
 
 CXXFLAGS := -c -stdlib=libc++ -std=c++1z -W{all,extra,error,no-unused-parameter} -pedantic -isystem ./$(LIBDIR)/include
 CFLAGS   := -c -isystem ./$(LIBDIR)/include
-LDFLAGS  := -stdlib=libc++ -lglfw -ldl
+LDFLAGS  := -stdlib=libc++ -lglfw -ldl -pthread
 
 DEBUG ?= 1
 ifeq ($(DEBUG), 1)
-	CXXFLAGS += -DDEBUG -g -fno-limit-debug-info
+	CXXFLAGS += -DDEBUG -g -fno-limit-debug-info -fsanitize=address
 	LDFLAGS += -g -fno-limit-debug-info
 	OBJDIR := $(DEBUGDIR)/$(OBJDIR)
 	DEPDIR := $(DEBUGDIR)/$(DEPDIR)
 	BIN := $(DEBUGBIN)
+else
+	CXXFLAGS += -O2
+	LDFLAGS += -O2
 endif
 
 DEPFLAGS    = -MT $@ -MMD -MP -MF $(DEPDIR)/$*.Td
