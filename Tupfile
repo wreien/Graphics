@@ -1,0 +1,2 @@
+include_rules
+: $(GROUPDIR)/<objs> |> $(CXX) $(LDFLAGS) %<objs> -o %o |> graphics

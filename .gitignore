@@ -2,6 +2,9 @@
 *.sw[op]
 .o/
 .d/
+.tup/
+build-debug/
+build-release/
 compile_commands.json
 .ycm_extra_conf.py
 graphics

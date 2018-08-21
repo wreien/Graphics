@@ -1,0 +1,18 @@
+&LIBDIR = lib/include
+
+CC  = clang
+CXX = clang++
+
+CXXFLAGS += -stdlib=libc++ -std=c++17
+CXXFLAGS += -Wall -Wextra -Wno-unused-parameter -pedantic
+CXXFLAGS += @(CXXFLAGS)
+
+CFLAGS += @(CFLAGS)
+
+LDFLAGS += -stdlib=libc++ -lglfw -ldl -pthread
+LDFLAGS += @(LDFLAGS)
+
+GROUPDIR = $(TUP_CWD)
+
+!cxx = |> $(CXX) -isystem &(LIBDIR) $(CXXFLAGS) -c %f -o %o |> %B.o $(GROUPDIR)/<objs>
+!cc  = |> $(CC)  -isystem &(LIBDIR) $(CFLAGS)   -c %f -o %o |> %B.o $(GROUPDIR)/<objs>

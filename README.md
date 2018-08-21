@@ -12,6 +12,8 @@ the standard library. Edit the Makefile according to your needs.
 
 ## Compilation
 
+### With Make
+
 To compile, just run
 
     $ make
@@ -21,6 +23,26 @@ to generate an executable `graphics_d`. To generate a release target, run
     $ make DEBUG=0
 
 to generate an executable `graphics`.
+
+### With Tup
+
+First run
+
+    $ tup variants
+
+to generate the `build-release` and `build-debug` folders. Then, running
+
+    $ tup
+
+anywhere in the tree will generate executables inside each of those folders.
+For ease of use, you can symlink those executables to the root level of the
+tree with
+
+    $ ln -s build-release/graphics g
+    $ ln -s build-debug/graphics gd
+
+(Note that we can't use `graphics` as a name, since `tup` will complain that
+we are trying to generate a file that already exists.)
 
 ## Running
 
